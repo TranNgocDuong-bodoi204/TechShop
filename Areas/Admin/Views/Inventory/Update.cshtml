@@ -1,0 +1,314 @@
+@using TechnicalShop.Models
+@model TechnicalShop.Models.InventoryModel
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa Thông Tin Kho Hàng - TechStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="tech-store.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .edit-form-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem 0;
+            animation: tech-fade-in 0.5s ease-in-out;
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(45deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 1.5rem;
+            border: none;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .btn-save {
+            background: linear-gradient(45deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: linear-gradient(45deg, #6c757d 0%, #495057 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+        
+        .product-info-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid #007bff;
+        }
+        
+        .stock-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .stock-high {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .stock-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .stock-low {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .tech-gradient {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        }
+        
+        .tech-footer {
+            background-color: #343a40;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .quantity-input-group {
+            position: relative;
+        }
+        
+        .quantity-buttons {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .quantity-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 20px;
+            font-size: 12px;
+            border-radius: 3px;
+            margin: 1px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: #0056b3;
+        }
+        
+        .alert-info {
+            border-left: 4px solid #007bff;
+            background-color: #e7f3ff;
+            border-color: #b8daff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header section with edit theme -->
+    <div class="header-section tech-gradient">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">
+                        <i class="fas fa-edit me-3"></i>
+                        Sửa Thông Tin Kho Hàng
+                    </h1>
+                    <p class="mb-0 opacity-75">Cập nhật số lượng tồn kho sản phẩm công nghệ</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a asp-action="Index" asp-area="Admin" asp-controller="Inventory" class="btn btn-light">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Product Info Card -->
+        <div class="product-info-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h4 class="mb-2">
+                        <i class="fab fa-apple me-2 text-secondary"></i>
+                        @ViewBag.ProductName
+                    </h4>
+                    <p class="mb-1 text-muted">Mã sản phẩm: <strong>@Model.ProductId</strong></p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="current-stock">
+                        <h5 class="text-primary mb-1">Số lượng hiện tại</h5>
+                        <h2 class="text-dark mb-0">@Model.Quantity <small class="text-muted">chiếc</small></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="edit-form-card">
+            <div class="card-header-custom">
+                <h4 class="mb-0">
+                    <i class="fas fa-cubes me-2"></i>
+                    Cập Nhật Số Lượng Tồn Kho
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form id="editInventoryForm" asp-action="Update" asp-controller="Inventory" method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="currentQuantity" class="form-label">
+                                    <i class="fas fa-box me-2"></i>
+                                    Số Lượng Hiện Tại
+                                </label>
+                                <input type="number" class="form-control" id="currentQuantity" value="@Model.Quantity" readonly>
+                                <small class="text-muted">Số lượng tồn kho hiện tại trong hệ thống</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="newQuantity" class="form-label">
+                                    <i class="fas fa-edit me-2 text-success"></i>
+                                    Số Lượng Mới <span class="text-danger">*</span>
+                                </label>
+                                <div class="quantity-input-group">
+                                    <input asp-for="Quantity" type="number" class="form-control" id="newQuantity" value="@Model.Quantity" min="0" max="9999" required>
+                                    <input type="hidden" asp-for="Id" value="@Model.Id" />
+                                    <input type="hidden" asp-for="ProductId" value="@Model.ProductId" />
+                                    <div class="quantity-buttons">
+                                        <button type="button" class="quantity-btn" onclick="increaseQuantity()">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Nhập số lượng tồn kho mới (0-9999)</small>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Action Buttons -->
+                    <div class="text-center pt-3">
+                        <button type="button" class="btn btn-cancel me-3" onclick="window.history.back()">
+                            <i class="fas fa-times me-2"></i>
+                            Hủy Bỏ
+                        </button>
+                        <button type="submit" class="btn btn-save">
+                            <i class="fas fa-save me-2"></i>
+                            Lưu Thay Đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer" class="tech-footer">
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <p class="pull-left">Copyright © 2024 TechStore Vietnam. All rights reserved.</p>
+                    <p class="pull-right">Powered by <span><a href="#" class="text-primary">TechAdmin System</a></span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Quantity adjustment functions
+        function increaseQuantity() {
+            const input = document.getElementById('newQuantity');
+            const currentValue = parseInt(input.value) || 0;
+            if (currentValue < 9999) {
+                input.value = currentValue + 1;
+                updateChangeSummary();
+            }
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('newQuantity');
+            const currentValue = parseInt(input.value) || 0;
+            if (currentValue > 0) {
+                input.value = currentValue - 1;
+                updateChangeSummary();
+            }
+        }
+
+        // Initialize change summary on page load
+    </script>
+</body>
+</html>

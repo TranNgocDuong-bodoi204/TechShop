@@ -1,0 +1,125 @@
+@using TechnicalShop.Models
+@model IEnumerable<CategoryModel>
+
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<!-- Added modern page header with breadcrumb and action button -->
+<div class="flex flex-col space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-900">Quản lý danh mục</h1>
+            <p class="text-sm text-gray-600 mt-1">Quản lý các danh mục sản phẩm trong cửa hàng</p>
+        </div>
+        <a class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm" 
+           asp-area="Admin" asp-controller="Category" asp-action="Create">
+            <i class="fas fa-plus mr-2"></i>
+            Thêm danh mục
+        </a>
+    </div>
+
+    <!-- Replaced old Bootstrap table with modern card-based design -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <!-- Table Header -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <div class="grid grid-cols-12 gap-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div class="col-span-3">Tên danh mục</div>
+                <div class="col-span-4">Mô tả</div>
+                <div class="col-span-2">Slug</div>
+                <div class="col-span-1">Trạng thái</div>
+                <div class="col-span-2 text-center">Hành động</div>
+            </div>
+        </div>
+
+        <!-- Table Body -->
+        <div class="divide-y divide-gray-200">
+            @foreach(var item in Model)
+            {
+                <div class="px-6 py-4 hover:bg-gray-50 transition-colors duration-150">
+                    <div class="grid grid-cols-12 gap-4 items-center">
+                        <!-- Name -->
+                        <div class="col-span-3">
+                            <div class="font-medium text-gray-900">@item.Name</div>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="col-span-4">
+                            <div class="text-sm text-gray-600 line-clamp-2">
+                                @(string.IsNullOrEmpty(item.Description) ? "Không có mô tả" : item.Description)
+                            </div>
+                        </div>
+                        
+                        <!-- Slug -->
+                        <div class="col-span-2">
+                            <code class="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded font-mono">@item.Slug</code>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div class="col-span-1">
+                            @if(item.Status == 1 || item.Status == 0)
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1.5"></span>
+                                    Hoạt động
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <span class="w-1.5 h-1.5 bg-red-400 rounded-full mr-1.5"></span>
+                                    Không hoạt động
+                                </span>
+                            }
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="col-span-2 flex items-center justify-center space-x-2">
+                            <a class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors duration-200" 
+                               asp-area="Admin" asp-controller="Category" asp-action="Update" asp-route-id="@item.Id">
+                                <i class="fas fa-edit mr-1"></i>
+                                Sửa
+                            </a>
+                            <a class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors duration-200" 
+                               asp-area="Admin" asp-controller="Category" asp-action="Delete" asp-route-id="@item.Id" 
+                               onclick="return confirm('Bạn có chắc muốn xóa danh mục này?');">
+                                <i class="fas fa-trash mr-1"></i>
+                                Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Added empty state when no categories exist -->
+        @if(!Model.Any())
+        {
+            <div class="px-6 py-12 text-center">
+                <div class="mx-auto h-12 w-12 text-gray-400">
+                    <i class="fas fa-folder-open text-4xl"></i>
+                </div>
+                <h3 class="mt-4 text-sm font-medium text-gray-900">Chưa có danh mục nào</h3>
+                <p class="mt-2 text-sm text-gray-500">Bắt đầu bằng cách tạo danh mục đầu tiên cho cửa hàng của bạn.</p>
+                <div class="mt-6">
+                    <a class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200" 
+                       asp-area="Admin" asp-controller="Category" asp-action="Create">
+                        <i class="fas fa-plus mr-2"></i>
+                        Thêm danh mục đầu tiên
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Added custom styles for line-clamp utility -->
+<style>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>

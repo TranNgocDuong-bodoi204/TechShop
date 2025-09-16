@@ -1,0 +1,85 @@
+﻿@using TechnicalShop.Models.ViewModels
+@model CartItemViewModel
+
+<section id="cart_items" class="py-5">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-light px-3 py-2 rounded">
+                <li class="breadcrumb-item"><a href="/" style="text-decoration:none;">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+            </ol>
+        </nav>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:120px;">Hình ảnh</th>
+                        <th style="text-align:left;">Sản phẩm</th>
+                        <th>Giá</th>
+                        <th style="width:220px;">Số lượng</th>
+                        <th>Tổng</th>
+                        <th style="width:70px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model.listCartItem == null || !Model.listCartItem.Any())
+                    {
+                        <tr>
+                            <td colspan="6" style="padding:40px 0; color:#888; font-size:18px; text-align:center;">
+                                <i class="fa fa-shopping-cart" style="font-size:24px; margin-right:10px;"></i>
+                                Giỏ hàng của bạn đang trống
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.listCartItem)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="/Detail/Index/@item.ProductId">
+                                        <img src="~/images/@item.Image" alt="@item.ProductName" 
+                                             style="max-width:80px; max-height:80px; border-radius:6px;" />
+                                    </a>
+                                </td>
+                                <td style="text-align:left;">
+                                    <h6 class="mb-0">
+                                        <a href="/Detail/Index/@item.ProductId" style="text-decoration:none; color:#333;">
+                                            @item.ProductName
+                                        </a>
+                                    </h6>
+                                </td>
+                                <td><span class="fw-bold text-danger">@item.Price.ToString("C0")</span></td>
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <a asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId"
+                                           class="btn btn-outline-secondary btn-sm px-3 me-2" title="Giảm số lượng">-</a>
+                                        <input type="text" class="form-control text-center" value="@item.Quantity"
+                                               readonly style="width:60px; font-weight:bold;" />
+                                        <a asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId"
+                                           class="btn btn-outline-primary btn-sm px-3 ms-2" title="Tăng số lượng">+</a>
+                                    </div>
+                                </td>
+                                <td><span class="fw-bold">@{
+                                    decimal count = item.Price * item.Quantity;
+                                    } @count.ToString("C0")
+                                    </span></td>
+                                <td>
+                                    <a asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId"
+                                       class="btn btn-danger btn-sm" title="Xóa sản phẩm">✕</a>
+                                </td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td colspan="6" class="text-end fw-bold" style="font-size:18px; padding:15px;">
+                                Tổng cộng: <span class="text-danger">@Model.GrandTotal.ToString("C0")</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

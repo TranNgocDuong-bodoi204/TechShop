@@ -1,0 +1,213 @@
+﻿@using System.Text.Json
+@using TechnicalShop.Models
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Dashboard - Technical Shop">
+    <meta name="author" content="">
+    <title>@ViewData["title"] - Admin Dashboard</title>
+    
+    <!-- Replaced all old CSS with modern Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="~/css/globals.css" rel="stylesheet">
+    
+    <link rel="shortcut icon" href="~/images/ico/favicon.ico">
+</head>
+
+<body class="h-full bg-background">
+    <!-- Complete redesign with modern sidebar layout -->
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <div class="hidden md:flex md:w-64 md:flex-col">
+            <div class="flex flex-col flex-grow pt-5 overflow-y-auto bg-sidebar border-r border-sidebar-border">
+                <!-- Logo -->
+                <div class="flex items-center flex-shrink-0 px-6 pb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-store text-primary-foreground text-lg"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-sidebar-foreground">TechShop</h1>
+                            <p class="text-sm text-muted-foreground">Admin Panel</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex-1 px-4 pb-4 space-y-1">
+                    <a asp-action="Index" asp-controller="AdminHome" 
+                       class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200">
+                        <i class="fas fa-home mr-3 text-base"></i>
+                        Trang chính
+                    </a>
+                    
+                    <a asp-action="Index" asp-controller="Product" 
+                       class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200">
+                        <i class="fas fa-box mr-3 text-base"></i>
+                        Sản phẩm
+                    </a>
+                    
+                    <a asp-action="Index" asp-controller="Category" 
+                       class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200">
+                        <i class="fas fa-tags mr-3 text-base"></i>
+                        Danh mục
+                    </a>
+                    
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Brands" 
+                       class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200">
+                        <i class="fas fa-award mr-3 text-base"></i>
+                        Nhãn hiệu
+                    </a>
+                    
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Inventory" 
+                       class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200">
+                        <i class="fas fa-warehouse mr-3 text-base"></i>
+                        Kho hàng
+                    </a>
+
+                    <a asp-area="Admin" asp-action="Index" asp-controller="Comment" 
+                       class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200">
+                        <i class="fas fa-shopping-cart mr-3 text-base"></i>
+                        Đánh giá
+                    </a>
+                    
+                    <div class="pt-4 mt-4 border-t border-sidebar-border">
+                        <a asp-action="Index" asp-controller="Home" asp-area="Default" 
+                           class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200">
+                            <i class="fas fa-external-link-alt mr-3 text-base"></i>
+                            Về giao diện chính
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <!-- Top header -->
+            <header class="bg-card shadow-sm border-b border-border">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <!-- Mobile menu button -->
+                    <button type="button" class="md:hidden p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    
+                    <!-- Search bar -->
+                    <div class="flex-1 max-w-lg mx-4">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-muted-foreground"></i>
+                            </div>
+                            <input type="text" 
+                                   placeholder="Tìm kiếm..." 
+                                   class="block w-full pl-10 pr-3 py-2 border border-input rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <!-- User menu -->
+                    <div class="flex items-center space-x-4">
+                        @{
+                            var ss = Context.Session.GetString("user");
+                            if(ss != null)
+                            {
+                                var user = JsonSerializer.Deserialize<AccountModel>(ss);
+                                
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-primary-foreground text-sm"></i>
+                                        </div>
+                                        <div class="hidden sm:block">
+                                            <p class="text-sm font-medium text-foreground">@user.Username</p>
+                                            <p class="text-xs text-muted-foreground">Administrator</p>
+                                        </div>
+                                    </div>
+                                    <a asp-action="Logout" asp-controller="AdminHome" 
+                                       class="inline-flex items-center px-3 py-2 text-sm font-medium text-destructive-foreground bg-destructive rounded-lg hover:bg-destructive/90 transition-colors duration-200">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>
+                                        Đăng xuất
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-muted-foreground text-sm"></i>
+                                    </div>
+                                    <span class="text-sm text-muted-foreground">Account</span>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main content -->
+            <main class="flex-1 overflow-y-auto bg-background">
+                <div class="p-6">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Mobile sidebar overlay -->
+    <div class="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50 hidden" id="sidebar-overlay">
+        <div class="fixed inset-y-0 left-0 w-64 bg-sidebar border-r border-sidebar-border">
+            <!-- Mobile sidebar content (same as desktop) -->
+            <div class="flex flex-col flex-grow pt-5 overflow-y-auto">
+                <div class="flex items-center justify-between px-6 pb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-store text-primary-foreground text-lg"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-sidebar-foreground">TechShop</h1>
+                            <p class="text-sm text-muted-foreground">Admin Panel</p>
+                        </div>
+                    </div>
+                    <button type="button" class="p-2 rounded-md text-muted-foreground hover:text-foreground" id="close-sidebar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="flex-1 px-4 pb-4 space-y-1">
+                    <!-- Same navigation as desktop -->
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Replaced old jQuery/Bootstrap with modern vanilla JS -->
+    <script>
+        // Mobile sidebar toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('button[type="button"].md\\:hidden');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const closeSidebarBtn = document.getElementById('close-sidebar');
+            
+            if (mobileMenuBtn && sidebarOverlay) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    sidebarOverlay.classList.remove('hidden');
+                });
+            }
+            
+            if (closeSidebarBtn && sidebarOverlay) {
+                closeSidebarBtn.addEventListener('click', function() {
+                    sidebarOverlay.classList.add('hidden');
+                });
+                
+                sidebarOverlay.addEventListener('click', function(e) {
+                    if (e.target === sidebarOverlay) {
+                        sidebarOverlay.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

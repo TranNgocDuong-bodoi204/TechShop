@@ -1,0 +1,267 @@
+@model TechnicalShop.Models.AccountModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập & Đăng ký</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #475569;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            min-height: 600px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-section {
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .register-section {
+            background: #f1f5f9;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            color: #059669;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #475569;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #475569;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 16px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #059669;
+            color: #ffffff;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #047857;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-secondary {
+            background: #10b981;
+        }
+
+        .btn-secondary:hover {
+            background: #059669;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .form-footer p {
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: #059669;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: #ffffff;
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .register-section .divider span {
+            background: #f1f5f9;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .back-home a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #059669;
+            color: #ffffff;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-home a:hover {
+            background: #047857;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="form-section register-section">
+            <div class="form-header">
+                <h2>Đăng ký</h2>
+                <p>Tạo tài khoản mới</p>
+                @Html.Partial("_NotificationPartial")
+            </div>
+            <form method="post" asp-action="Register" asp-controller="Account">
+                <div class="row">
+                    <div class="form-group">
+                        <label asp-for="Username"  for="Username">Tên đăng nhập</label>
+                        <input asp-for="Username" type="text" id="Username" name="Username" placeholder="Tên đăng nhập" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" for="Email">Email</label>
+                    <input asp-for="Email" value="@Model.Email" type="email" id="Email" name="email" placeholder="Nhập email của bạn" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" for="PhoneNumber">Số điện thoại</label>
+                    <input asp-for="PhoneNumber" value="@Model.PhoneNumber" type="tel" id="PhoneNumber" name="PhoneNumber" placeholder="Nhập số điện thoại" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" for="Address">Địa chỉ</label>
+                    <input asp-for="Address" value="@Model.Address" type="text" id="Address" name="Address" placeholder="Nhập địa chỉ của bạn" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" for="Password">Mật khẩu</label>
+                    <input asp-for="Password" type="Password" id="Password" name="password" placeholder="Tạo mật khẩu" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-secondary">Đăng ký</button>
+                </form>
+                <div class="form-footer">
+                    <a asp-action="Index" asp-controller="Home">
+                    <button type="button" class="btn btn-secondary" asp-action="Index" asp-controller="Home" ">Quay về trang chủ</button></a>
+                </div>
+            
+        </div>
+    </div>
+</body>
+</html>

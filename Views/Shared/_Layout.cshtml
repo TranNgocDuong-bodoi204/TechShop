@@ -1,0 +1,332 @@
+﻿@using System.Text.Json
+@using TechnicalShop.Models
+@using TechnicalShop.Models.ViewModels
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<title>Home | E-Shopper</title>
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap Bundle JS (bao gồm Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<link href="~/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+	<link href="~/css/prettyPhoto.css" rel="stylesheet">
+	<link href="~/css/price-range.css" rel="stylesheet">
+	<link href="~/css/animate.css" rel="stylesheet">
+	<link href="~/css/main.css" rel="stylesheet">
+	<link href="~/css/responsive.css" rel="stylesheet">
+
+	<!---Swiper-->
+	<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+	<style>
+        .swiper {
+            width: 90%;
+            height: 450px;
+        }
+        .swiper-wrapper {
+            height: 400px;
+        }
+        .swiper-slide {
+            background-color: rgb(248, 248, 248);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .swiper-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+    </style>
+    <style>
+        .form-check-inline {
+  margin-right: 15px;
+}
+.form-check-label {
+  margin-left: 4px;
+  cursor: pointer;
+}
+    </style>
+	<!---Swiper-->
+
+	<!--[if lt IE 9]>
+	<script src="js/html5shiv.js"></script>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+	<link rel="shortcut icon" href="images/ico/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+</head><!--/head-->
+
+<body>
+
+	<header style="background:#fff; box-shadow:0 2px 15px rgba(0,0,0,0.08); position:sticky; top:0; z-index:1000;">
+    <!-- Top Bar -->
+    <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding:4px 0; font-size:13px;">
+        <div style="max-width:1200px; margin:0 auto; padding:0 16px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; gap:16px;">
+                <a href="#" style="color:white; text-decoration:none; display:flex; align-items:center; gap:4px; transition:opacity .3s;">
+                    📞 +2 95 01 88 821
+                </a>
+                <a href="#" style="color:white; text-decoration:none; display:flex; align-items:center; gap:4px; transition:opacity .3s;">
+                    ✉️ info@domain.com
+                </a>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <a href="#" style="width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.2); font-size:12px;">📘</a>
+                <a href="#" style="width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.2); font-size:12px;">🐦</a>
+                <a href="#" style="width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.2); font-size:12px;">💼</a>
+                <a href="#" style="width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.2); font-size:12px;">🎨</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <div style="padding:8px 0; background:white;">
+        <div style="max-width:1200px; margin:0 auto; padding:0 16px; display:flex; justify-content:space-between; align-items:center;">
+            <!-- Logo -->
+            <a asp-action="Index" asp-controller="Home"asp-controller="Home" asp-area="Default" style="display:flex; align-items:center; gap:8px; text-decoration:none;">
+                <div style="width:36px; height:36px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:16px;">L</div>
+                <span style="font-size:18px; font-weight:700; color:#2d3748;">LOGO</span>
+            </a>
+
+            <!-- User Menu -->
+            <div style="display:flex; align-items:center; gap:6px; font-size:13px;">
+
+                @{
+                    string? ss = Context.Session.GetString("user");
+                }
+
+                @if (!string.IsNullOrEmpty(ss))
+                {
+                    <a asp-action="AccountInfo" asp-controller="Account" asp-area="Default"
+                    style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">
+                    👤 Account
+                    </a>
+                }
+                else
+                {
+    <a asp-action="Index" asp-controller="Account" asp-area="Default"
+       style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">
+       👤 Account
+    </a>
+}
+
+
+                <a href="#" style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">❤️ Wishlist</a>
+                <a href="checkout.html" style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">✅ Checkout</a>
+                <a asp-action="Index" asp-controller="Cart" asp-area="Default" style="color:white; padding:6px 12px; border-radius:6px; display:flex; align-items:center; gap:6px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); text-decoration:none; position:relative;">
+                    🛒 Cart <span style="background:rgba(255,255,255,0.3); width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">
+                        @{
+                            string? jsonString = Context.Session.GetString("Cart");
+
+                            if(jsonString ==null)
+                            {
+                                <span>0</span>
+                            }
+                            else{
+                                var list = JsonSerializer.Deserialize<List<CartItemModel>>(jsonString);
+                                int count = 0;
+                                foreach(var item in list)
+                                {
+                                    count += item.Quantity;
+                                }
+
+                                <span>@count</span>
+                            }
+                        }
+                    </span>
+                </a>
+
+                <!-- User Authentication -->
+                <div style="margin-left:12px; padding-left:12px; border-left:1px solid #e2e8f0;">
+                    @{
+                        var user = Context.Session.GetString("user");
+                        if(user == null)
+                        {
+                            <a asp-action="Index" asp-controller="Account" asp-area="Default" style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">🔐 Đăng nhập</a>
+                        }
+                        else{
+                            var userObj = JsonSerializer.Deserialize<AccountModel>(user);
+                            if(userObj.Role == "admin"){
+                                <a asp-action="Index" asp-controller="AdminHome" asp-area="Admin" style="color:#667eea; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">👑 Xin chào admin: @userObj.Username</a>
+                            } else {
+                                <a asp-action="Index" asp-controller="Home" asp-area="Default" style="color:#667eea; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">👋 Xin chào: @userObj.Username</a>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation & Search -->
+    <div style="background:#f8fafc; border-top:1px solid #e2e8f0;">
+        <div style="max-width:1200px; margin:0 auto; padding:0 16px; display:flex; justify-content:space-between; align-items:center; min-height:48px;">
+            <!-- Navigation -->
+            <nav style="display:flex; align-items:center; font-size:14px;">
+                <a asp-action="Index" asp-controller="Home" asp-area="Default" style="color:#667eea; padding:10px 16px; font-weight:600; border-bottom:2px solid #667eea; text-decoration:none;">Home</a>
+                <a href="#" style="color:#4a5568; padding:10px 16px; text-decoration:none;">Về chúng tôi</a>
+                <a href="#" style="color:#4a5568; padding:10px 16px; text-decoration:none;">Liên hệ</a>
+            </nav>
+
+            <!-- Search -->
+            <div style="position:relative;">
+            <form asp-action="Index" asp-controller="Search" method="get">
+                <input type="text" name="keyword" placeholder="Tìm kiếm..." 
+                    style="padding:8px 36px 8px 12px; border:1px solid #e2e8f0; border-radius:20px; width:220px; font-size:13px;">
+                <button type="submit" 
+                        style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); border:none; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; color:#fff;">
+                    🔍
+                </button>
+            </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+        @Html.Partial("_NotificationPartial")
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+
+	<footer id="footer" style="background-color: #1a1a1a; color: #ffffff; padding: 40px 0; font-family: Arial, sans-serif;">
+    <!-- Footer Top -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between;">
+            <!-- Company Info -->
+            <div style="flex: 1; min-width: 200px;">
+                <h2 style="font-size: 24px; margin-bottom: 15px; color: #00cc99;">e-Shopper</h2>
+                <p style="font-size: 14px; line-height: 1.6; color: #cccccc;">Explore our wide range of products and enjoy a seamless shopping experience with top-notch customer support.</p>
+            </div>
+            <!-- Video Gallery -->
+            <div style="flex: 1; min-width: 200px; text-align: center;">
+                <a href="#" style="text-decoration: none; color: inherit;">
+                    <img src="images/home/iframe1.png" alt="Video Thumbnail" style="width: 100%; max-width: 200px; border-radius: 8px; margin-bottom: 10px;" />
+                    <p style="font-size: 14px; margin: 5px 0; color: #cccccc;">Circle of Hands</p>
+                    <h3 style="font-size: 16px; font-weight: bold; color: #ffffff;">24 DEC 2024</h3>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Widgets -->
+    <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px; border-top: 1px solid #333333;">
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between;">
+            <!-- Service -->
+            <div style="flex: 1; min-width: 150px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #00cc99;">Service</h2>
+                <ul style="list-style: none; padding: 0; font-size: 14px;">
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Online Help</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Contact Us</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Order Status</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Change Location</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">FAQ’s</a></li>
+                </ul>
+            </div>
+            <!-- Quick Shop -->
+            <div style="flex: 1; min-width: 150px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #00cc99;">Quick Shop</h2>
+                <ul style="list-style: none; padding: 0; font-size: 14px;">
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">T-Shirt</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Mens</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Womens</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Gift Cards</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Shoes</a></li>
+                </ul>
+            </div>
+            <!-- Policies -->
+            <div style="flex: 1; min-width: 150px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #00cc99;">Policies</h2>
+                <ul style="list-style: none; padding: 0; font-size: 14px;">
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Terms of Use</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Privacy Policy</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Refund Policy</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Billing System</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Ticket System</a></li>
+                </ul>
+            </div>
+            <!-- About Shopper -->
+            <div style="flex: 1; min-width: 150px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #00cc99;">About Shopper</h2>
+                <ul style="list-style: none; padding: 0; font-size: 14px;">
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Company Information</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Careers</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Store Location</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Affiliate Program</a></li>
+                    <li><a href="#" style="color: #cccccc; text-decoration: none; line-height: 2;">Copyright</a></li>
+                </ul>
+            </div>
+            <!-- Newsletter -->
+            <div style="flex: 1; min-width: 250px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #00cc99;">Newsletter</h2>
+                <div style="display: flex; gap: 10px;">
+                    <input type="email" placeholder="Your email address" style="padding: 10px; width: 100%; max-width: 200px; border: none; border-radius: 5px; font-size: 14px;" />
+                    <button type="button" style="padding: 10px 20px; background-color: #00cc99; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">Subscribe</button>
+                </div>
+                <p style="font-size: 14px; margin-top: 10px; color: #cccccc;">Stay updated with the latest news and exclusive offers from our site.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div style="background-color: #111111; padding: 20px 0; margin-top: 40px;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; flex-wrap: wrap; justify-content: space-between; font-size: 14px; color: #cccccc;">
+            <p>Copyright © 2025 e-Shopper Inc. All rights reserved.</p>
+            <p>Designed by <a href="http://www.themeum.com" style="color: #00cc99; text-decoration: none;" target="_blank">Themeum</a></p>
+        </div>
+    </div>
+</footer>
+
+
+
+	<script src="~/js/jquery.js"></script>
+	<script src="~/js/bootstrap.min.js"></script>
+	<script src="~/js/jquery.scrollUp.min.js"></script>
+	<script src="~/js/price-range.js"></script>
+	<script src="~/js/jquery.prettyPhoto.js"></script>
+	<script src="~/js/main.js"></script>
+</body>
+</html>
+
+<script>
+
+  var swiper = new Swiper(".mySwiper", {
+    loop: true, // lặp lại vô hạn
+    autoplay: {
+      delay: 2000, // 3 giây đổi ảnh
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    effect: "cube", // có thể đổi thành "fade", "cube", "coverflow", "flip"
+    speed: 700 // tốc độ chuyển slide (ms)
+  });
+</script>

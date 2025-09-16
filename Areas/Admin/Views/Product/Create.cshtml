@@ -1,0 +1,183 @@
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using TechnicalShop.Areas.Admin.Model
+@using TechnicalShop.Models.ViewModels
+@model ProductViewModel
+
+@{
+    ViewData["Title"] = "Thêm sản phẩm";
+}
+
+<!-- Breadcrumb -->
+<nav class="flex mb-6" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="#" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-emerald-600">
+                <i class="fas fa-home w-4 h-4 mr-2"></i>
+                Trang chủ
+            </a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 w-4 h-4"></i>
+                <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="ml-1 text-sm font-medium text-gray-700 hover:text-emerald-600 md:ml-2">Sản phẩm</a>
+            </div>
+        </li>
+        <li aria-current="page">
+            <div class="flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 w-4 h-4"></i>
+                <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Thêm mới</span>
+            </div>
+        </li>
+    </ol>
+</nav>
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Thêm sản phẩm mới</h1>
+        <p class="text-gray-600 mt-1">Tạo sản phẩm mới cho cửa hàng của bạn</p>
+    </div>
+    @Html.Partial("_NotificationPartial")
+    <a asp-area="Admin" asp-controller="Product" asp-action="Index" 
+       class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200">
+        <i class="fas fa-arrow-left mr-2"></i>
+        Quay về danh sách
+    </a>
+</div>
+
+<!-- Form Card -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Thông tin sản phẩm</h2>
+    </div>
+    
+    <form asp-area="Admin" asp-controller="Product" asp-action="Create" method="post" enctype="multipart/form-data" class="p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Column -->
+            <div class="space-y-6">
+                <!-- Replaced inline CSS with modern Tailwind styling and added icons -->
+                <div>
+                    <label for="Name" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-tag text-emerald-500 mr-2"></i>Tên sản phẩm
+                    </label>
+                    <input type="text" asp-for="Name" id="Name" name="Name" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200"
+                           placeholder="Nhập tên sản phẩm..." />
+                </div>
+
+                <div>
+                    <label for="Price" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-dollar-sign text-emerald-500 mr-2"></i>Giá sản phẩm
+                    </label>
+                    <input type="number" asp-for="Price" id="Price" name="Price" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200"
+                           placeholder="0" />
+                </div>
+
+                <div>
+                    <label for="Quantity" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-boxes text-emerald-500 mr-2"></i>Số lượng
+                    </label>
+                    <input type="number" asp-for="Quantity" id="Quantity" name="Quantity" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200"
+                           placeholder="0" />
+                </div>
+
+                <div>
+                    <label for="Status" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-info-circle text-emerald-500 mr-2"></i>Trạng thái
+                    </label>
+                    <select asp-for="Status" id="Status" name="Status"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200">
+                        <option value="">-- Chọn trạng thái --</option>
+                        <option value="InStock">Còn hàng</option>
+                        <option value="OutOfStock">Hết hàng</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="Slug" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-link text-emerald-500 mr-2"></i>Slug
+                    </label>
+                    <input asp-for="Slug" type="text" id="Slug" name="Slug"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200"
+                           placeholder="slug-san-pham" />
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-6">
+                <div>
+                    <label for="Image" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-image text-emerald-500 mr-2"></i>Ảnh sản phẩm
+                    </label>
+                    <input type="file" asp-for="Image" id="Image" name="Image" accept="image/*" onchange="previewImage(event)"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200" />
+                    <img id="preview" src="#" alt="Preview" 
+                         class="hidden mt-4 max-w-full h-48 object-cover rounded-lg border border-gray-200" />
+                </div>
+
+                <div>
+                    <label for="BrandId" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-star text-emerald-500 mr-2"></i>Thương hiệu
+                    </label>
+                    <select asp-for="BrandId" id="BrandId" name="BrandId"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200">
+                        <option value="">-- Chọn thương hiệu --</option>
+                        @foreach (var brand in ViewBag.Brands)
+                        {
+                            <option value="@brand.Id">@brand.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label for="CategoryId" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-folder text-emerald-500 mr-2"></i>Danh mục
+                    </label>
+                    <select asp-for="CategoryId" id="CategoryId" name="CategoryId"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200">
+                        <option value="">-- Chọn danh mục --</option>
+                        @foreach (var cate in ViewBag.Categories)
+                        {
+                            <option value="@cate.Id">@cate.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label for="Description" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-align-left text-emerald-500 mr-2"></i>Mô tả
+                    </label>
+                    <textarea asp-for="Description" id="Description" name="Description" rows="6"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 resize-none"
+                              placeholder="Nhập mô tả sản phẩm...">Mo ta</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end pt-6 border-t border-gray-200 mt-8">
+            <button type="submit" 
+                    class="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors duration-200">
+                <i class="fas fa-plus mr-2"></i>
+                Thêm sản phẩm
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function previewImage(event) {
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function(){
+        var preview = document.getElementById('preview');
+        preview.src = reader.result;
+        preview.classList.remove('hidden');
+    };
+    if(input.files && input.files[0]){
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

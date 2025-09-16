@@ -1,0 +1,102 @@
+@using TechnicalShop.Models.DTO;
+@model AccountViewDTO
+
+  <div class="container mt-5 pt-5" style="display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1200px;">
+    <!-- Main Section -->
+     <!-- Sidebar Menu -->
+    <div class="account-sidebar" style="flex: 1; min-width: 200px; padding-left: 20px;">
+      <div class="sidebar-card" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: #6a0dad; margin-bottom: 15px;">Menu</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 12px;"><a href="#account-info" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Thông tin Tài khoản</a></li>
+          <li style="margin-bottom: 12px;"><a href="/Account/Edit" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Chỉnh sửa Tài khoản</a></li>
+          <li style="margin-bottom: 12px;"><a href="/Account/Orders" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Xem đơn hàng</a></li>
+          <li style="margin-bottom: 12px;"><a href="#purchase-history" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Lịch sử mua hàng</a></li>
+          
+          <li style="margin-bottom:12px;">
+              <a asp-action="Logout" asp-controller="Account" asp-area="Default"
+                style="
+                    display:block;
+                    padding:8px 12px;
+                    border-radius:6px;
+                    text-decoration:none;
+                    color:white;
+                    background-color:#e53e3e;
+                    font-weight:500;
+                    text-align:center;
+                    transition: background 0.3s;
+                "
+                onmouseover="this.style.backgroundColor='#c53030';"
+                onmouseout="this.style.backgroundColor='#e53e3e';">
+                👋 Đăng xuất
+              </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="account-main" style="flex: 3; padding-right: 20px;">
+      <div class="account-card" style="background-color: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+        <h2 style="color: #6a0dad; margin-bottom: 20px;">Thông tin Tài khoản</h2>
+        <div class="mb-3">
+          <label class="form-label" style="font-weight: bold;">Tên đăng nhập:</label>
+          <input type="text" value="@Model.Username" class="form-control" readonly style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-weight: bold;">Email:</label>
+          <input type="email" value="@Model.Email" class="form-control" readonly style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-weight: bold;">Số điện thoại:</label>
+          <input type="tel" value="@Model.PhoneNumber" class="form-control" readonly style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-weight: bold;">Địa chỉ:</label>
+          <input type="text" value="@Model.Address" class="form-control" readonly style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-weight: bold;">Ngày tạo:</label>
+          <input type="text" value="@Model.CreatedAt" class="form-control" readonly style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-weight: bold;">Quyền:</label>
+          <input type="text" value="@Model.Role" class="form-control" readonly style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <a href="/Account/Edit" class="btn btn-edit" style="background-color: #6a0dad; color: white; border: none; border-radius: 5px; padding: 10px 20px;">Chỉnh sửa</a>
+      </div>
+      <!-- Xem đơn hàng (template sẵn) -->
+      <div class="account-card" style="background-color: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+        <h2 style="color: #6a0dad; margin-bottom: 20px;">Đơn hàng gần đây</h2>
+        <table class="table table-striped">
+          <thead style="background-color: #6a0dad; color: white;">
+            <tr>
+              <th>Mã đơn hàng</th>
+              <th>Ngày đặt</th>
+              <th>Tổng tiền</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>DH001</td>
+              <td>16/09/2025</td>
+              <td>1,500,000 VNĐ</td>
+              <td>Đang xử lý</td>
+            </tr>
+            <tr>
+              <td>DH002</td>
+              <td>15/09/2025</td>
+              <td>2,000,000 VNĐ</td>
+              <td>Hoàn thành</td>
+            </tr>
+          </tbody>
+        </table>
+        <a href="/Account/Orders" class="btn btn-edit mt-2" style="background-color: #6a0dad; color: white; border: none; border-radius: 5px; padding: 10px 20px;">Xem tất cả</a>
+      </div>
+      <!-- Lịch sử mua hàng placeholder -->
+      <div class="account-card" style="background-color: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+        <h2 style="color: #6a0dad; margin-bottom: 20px;">Lịch sử mua hàng</h2>
+        <p>Nội dung sẽ được cập nhật sau.</p>
+      </div>
+    </div>
+  </div>
