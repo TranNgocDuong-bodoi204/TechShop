@@ -1,0 +1,139 @@
+@using TechnicalShop.Helper
+@using TechnicalShop.Models.DTO
+@model IEnumerable<OrderDetailDTO>
+<div style="max-width:1080px;margin:0 auto;padding:16px;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+
+  <!-- Thanh lọc / tìm kiếm -->
+<form method="get" asp-action="Filter"
+      style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px;border:1px solid #eee;border-radius:12px;padding:12px;">
+  <div style="display:flex;flex-direction:column;gap:6px;min-width:180px;flex:1;">
+    <label style="font-size:12px;color:#555;">Mã đơn</label>
+    <input type="text" name="code" value="@(ViewBag.Code ?? "")" placeholder="VD: OD-2025-0001"
+           style="padding:10px;border:1px solid #ddd;border-radius:8px;outline:none;">
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:6px;min-width:170px;">
+    <label style="font-size:12px;color:#555;">Trạng thái đơn hàng</label>
+    <select name="status" style="padding:10px;border:1px solid #ddd;border-radius:8px;outline:none;">
+      <option value="Pending"    selected="@(ViewBag.Status as string == "Pending"    ? "selected" : null)">Chờ xác nhận</option>
+  <option value="Processing" selected="@(ViewBag.Status as string == "Processing" ? "selected" : null)">Đang xử lý</option>
+  <option value="Shipping"   selected="@(ViewBag.Status as string == "Shipping"   ? "selected" : null)">Đang giao hàng</option>
+  <option value="Completed"  selected="@(ViewBag.Status as string == "Completed"  ? "selected" : null)">Hoàn thành</option>
+  <option value="Cancelled"  selected="@(ViewBag.Status as string == "Cancelled"  ? "selected" : null)">Đã hủy</option>
+    </select>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:6px;min-width:170px;">
+    <label style="font-size:12px;color:#555;">Trạng thái thanh toán</label>
+    <select name="payment" style="padding:10px;border:1px solid #ddd;border-radius:8px;outline:none;">
+      <option value="">Tất cả</option>
+      <!-- đổi value sang Enum name để binder map đúng -->
+      <option value="Paid"   selected="@(ViewBag.Payment as string == "Paid"   ? "selected" : null)">Đã thanh toán</option>
+  <option value="Unpaid" selected="@(ViewBag.Payment as string == "Unpaid" ? "selected" : null)">Chưa thanh toán</option>
+    </select>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:6px;">
+    <label style="font-size:12px;color:#555;">Từ ngày</label>
+    <input type="date" name="from" value="@(ViewBag.From ?? "")" placeholder="dd/MM/yyyy"
+           style="padding:10px;border:1px solid #ddd;border-radius:8px;outline:none;">
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:6px;">
+    <label style="font-size:12px;color:#555;">Đến ngày</label>
+    <input type="date" name="to" value="@(ViewBag.To ?? "")" placeholder="dd/MM/yyyy"
+           style="padding:10px;border:1px solid #ddd;border-radius:8px;outline:none;">
+  </div>
+
+  <div style="display:flex;gap:8px;margin-left:auto;">
+    <button type="submit"
+            style="padding:10px 14px;border:1px solid #ddd;border-radius:8px;background:#f7f7f7;cursor:pointer;">
+      Lọc
+    </button>
+    <a asp-action="Filter"
+       style="padding:10px 14px;border:1px solid #eee;border-radius:8px;background:#fff;cursor:pointer;display:inline-block;text-decoration:none;color:inherit;">
+      Xóa lọc
+    </a>
+  </div>
+</form>
+
+  <!-- Trạng thái trống -->
+  <div style="display:none;padding:28px;border:1px dashed #ddd;border-radius:12px;text-align:center;color:#666;margin-bottom:16px;">
+    Chưa có đơn hàng nào trùng điều kiện tìm kiếm.
+  </div>
+
+  <!-- Danh sách đơn hàng -->
+  @foreach(var item in Model)
+  {
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+    <!-- ĐƠN HÀNG 2 -->
+    <div style="border:1px solid #eaeaea;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <div style="font-weight:600;">Mã đơn: @item.id</div>
+          <div style="font-size:12px;color:#666;">
+            Ngày đặt: @item.orderAt.ToString("dd/MM/yyyy")
+        </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:#f1f1f1;color:#333;">@EnumToView.OrdetToView(item.orderStatus)</span>
+          <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:#f1f1f1;color:#333;">@EnumToView.PayemtStatusToView(item.paymentStatus)</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
+        <!-- Chủ đơn -->
+        <div style="flex:1 1 320px;border:1px solid #f0f0f0;border-radius:10px;padding:12px;">
+          <div style="font-weight:600;margin-bottom:8px;">Thông tin chủ đơn</div>
+          <div style="font-size:14px;line-height:1.7;">
+            <div><strong>Tên:</strong> @item.CustomerName</div>
+            <div><strong>Email:</strong> @item.Email</div>
+            <div><strong>SĐT:</strong> @item.Phone</div>
+            <div><strong>Địa chỉ:</strong> @item.Address</div>
+          </div>
+          <div style="margin-top:10px;">
+            <button style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fafafa;cursor:pointer;">Sửa thông tin chủ đơn</button>
+          </div>
+        </div>
+
+        <!-- Sản phẩm (CÓ ẢNH, KHUNG CỐ ĐỊNH) -->
+        <div style="flex:2 1 480px;border:1px solid #f0f0f0;border-radius:10px;padding:12px;">
+          <div style="font-weight:600;margin-bottom:8px;">Sản phẩm trong đơn</div>
+          @foreach(var product in item.orderDetails)
+          {
+          <!-- Item 1 -->
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f5f5f5;">
+            <!-- Khung ảnh cố định -->
+            <div style="width:80px;height:80px;border:1px solid #eee;border-radius:8px;overflow:hidden;flex:0 0 80px;background:#fafafa;display:flex;align-items:center;justify-content:center;">
+              <img src="~/images/@product.Image"
+                   alt="Bàn phím cơ TKL"
+                   style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+
+            <!-- Thông tin -->
+            <div style="flex:1;">
+              <div style="font-weight:600;">@product.ProductName</div>
+              <div style="font-size:13px;color:#666;">Mô tả: @product.Description</div>
+               <div style="font-size:13px;color:#666;">Số lượng: @product.Quantity</div>
+            </div>
+
+            <!-- Giá -->
+            <div style="min-width:140px;text-align:right;font-weight:600;">@product.Price₫</div>
+          </div>
+          }
+
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+        <div style="font-size:13px;color:#666;">Ghi chú: —</div>
+        <div style="text-align:right;">
+          <div style="font-size:13px;color:#666;">Tổng tiền</div>
+          <div style="font-size:20px;font-weight:700;">@item.TotalAmount</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

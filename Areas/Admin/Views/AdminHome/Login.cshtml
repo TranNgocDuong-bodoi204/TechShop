@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Admin Login";
+    string? error = TempData["Error"] as string;
+}
+
+<div style="display:flex; justify-content:center; align-items:center; height:80vh; background-color:#f3f4f6;">
+    <div style="width:360px; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); background-color:white;">
+        <h2 style="text-align:center; font-size:24px; margin-bottom:20px; color:#111827;">Đăng nhập Admin</h2>
+
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <div style="margin-bottom:15px; padding:10px; background-color:#fee2e2; color:#b91c1c; border-radius:6px; text-align:center;">
+                @error
+            </div>
+        }
+
+        <form method="post" asp-action="Index" asp-controller="Account" asp-area="default">
+            <div style="margin-bottom:15px;">
+                <label style="display:block; font-size:14px; margin-bottom:5px; color:#374151;">Email/Username</label>
+                <input type="text" name="textLogin" placeholder="Username"
+                       style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; outline:none;"/>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:14px; margin-bottom:5px; color:#374151;">Mật khẩu</label>
+                <input type="password" name="password" placeholder="Password"
+                       style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; outline:none;"/>
+            </div>
+
+            <button type="submit"
+                    style="width:100%; padding:10px; border:none; border-radius:6px; background-color:#2563eb; color:white; font-weight:bold; cursor:pointer;">
+                Đăng nhập
+            </button>
+        </form>
+    </div>
+</div>

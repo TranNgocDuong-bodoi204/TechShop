@@ -50,7 +50,14 @@ namespace TechnicalShop.Controllers
                 string userJson = JsonSerializer.Serialize(user);
 
                 HttpContext.Session.SetString("user", userJson);
-                return RedirectToAction("Index", "Home");
+                if (user.Role == "admin")
+                {
+                    return RedirectToAction("Index","AdminHome", new { area = "admin" });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             TempData["error"] = "Sai thông tin username hoặc mật khẩu";
             return View();
@@ -94,7 +101,7 @@ namespace TechnicalShop.Controllers
             return View(account);
         }
 
-        public IActionResult AccountInfo()
+        public async Task<IActionResult> AccountInfo()
         {
             string? userJson = HttpContext.Session.GetString("user");
 
@@ -112,14 +119,76 @@ namespace TechnicalShop.Controllers
             AccountToDTO dto = new AccountToDTO();
             AccountViewDTO accountDTO = dto.ToDTO(userModel);
 
+            List<Order> orders = await _context.Orders.Where(x => x.AccountId == accountDTO.Id).ToListAsync();
+            List<OrderViewDTO> orderViewDTOs = new List<OrderViewDTO>();
+
+            foreach (var order in orders)
+            {
+                OrderViewDTO orderViewDTO = new OrderViewDTO
+                {
+                    OrderID = order.OrderId,
+                    OrderAt = order.CreatedDate,
+                    TotalAmount = order.TotalAmount,
+                    orderstatus = order.orderStatus
+                };
+                orderViewDTOs.Add(orderViewDTO);
+            }
+            accountDTO.orderViewDTOs = orderViewDTOs;
             return View(accountDTO);
         }
+
+        public IActionResult Update()
+        {
+            AccountModel model = GetAccountFromSession();
+            AccountToDTO dto = new AccountToDTO();
+            AccountViewDTO accountView = dto.ToDTO(model);
+            return View(accountView);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Update(int Id, string Username, string Email, string PhoneNumber, string Address)
+        {
+            AccountModel model = await _context.Account.FindAsync(Id);
+
+            model.Username = Username;
+            model.Email = Email;
+            model.PhoneNumber = PhoneNumber;
+            model.Address = Address;
+
+            await _context.SaveChangesAsync();
+
+            TempData["NotificationMessage"] = "Cập nhật thành công";
+            TempData["NotificationType"] = "success";
+
+            AccountToDTO toDTO = new AccountToDTO();
+            AccountViewDTO accountView = toDTO.ToDTO(model);
+
+            return View("AccountInfo", accountView);
+        }
+
 
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("user");
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult Require()
+        {
+            return View();
+        }
+
+        private AccountModel GetAccountFromSession()
+        {
+            string? userJson = HttpContext.Session.GetString("user");
+            if (string.IsNullOrEmpty(userJson))
+            {
+                return new AccountModel();
+            }
+            AccountModel? userModel = JsonSerializer.Deserialize<AccountModel>(userJson);
+            if (userModel == null) return new AccountModel();
+            return userModel;
+        }
+
         
     }
 }

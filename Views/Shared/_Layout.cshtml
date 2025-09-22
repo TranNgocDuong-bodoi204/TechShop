@@ -15,6 +15,7 @@
 <!-- Bootstrap Bundle JS (bao gồm Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
 	<link href="~/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
 	<link href="~/css/prettyPhoto.css" rel="stylesheet">
@@ -22,6 +23,79 @@
 	<link href="~/css/animate.css" rel="stylesheet">
 	<link href="~/css/main.css" rel="stylesheet">
 	<link href="~/css/responsive.css" rel="stylesheet">
+
+    <!---Notification-->
+    @using System.Text.Json   <!-- đặt ở trên cùng của layout nếu chưa có -->
+
+@{
+    // Chuẩn bị JSON an toàn từ TempData (tránh null)
+    var notiObj = new {
+        message = (TempData["NotificationMessage"] ?? "").ToString(),
+        type = (TempData["NotificationType"] ?? "info").ToString()
+    };
+    var notiJson = JsonSerializer.Serialize(notiObj);
+}
+<!-- Thêm placeholder -->
+
+<style>
+/* CSS giống như ví dụ trước */
+.notification {
+  position: fixed; top:20px; right:20px;
+  min-width:260px; max-width:420px;
+  padding:12px 16px; border-radius:6px; color:#fff;
+  display:none; z-index:9999; box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  word-wrap:break-word; line-height:1.4;
+}
+.notification.success{background:#28a745;}
+.notification.error{background:#dc3545;}
+.notification.info{background:#007bff;}
+.notification.show{ display:block; animation:notiFadeIn .35s; }
+
+#notification-close { position:absolute; top:6px; right:8px; background:transparent; border:none; color:rgba(255,255,255,0.9); font-size:18px; cursor:pointer; line-height:1; }
+</style>
+
+<script>
+    // __notiData được inject từ server mà không bị HTML-encode
+    var __notiData = @Html.Raw(notiJson); // notiJson là một JSON string đã serialize
+
+    function showNotification(message, type = "info", duration = 3000) {
+        if (!message) return;
+        var container = document.getElementById("notification");
+        var textSpan = document.getElementById("notification-text");
+        var closeBtn = document.getElementById("notification-close");
+
+        textSpan.textContent = message; // an toàn, không parse HTML
+        container.className = "notification " + type + " show";
+        closeBtn.style.display = "block";
+
+        if (container._notiTimer) clearTimeout(container._notiTimer);
+        if (duration > 0) {
+            container._notiTimer = setTimeout(hideNotification, duration);
+        }
+    }
+
+    function hideNotification() {
+        var container = document.getElementById("notification");
+        var closeBtn = document.getElementById("notification-close");
+        container.classList.remove("show");
+        setTimeout(function () {
+            container.style.display = "none";
+            container.className = "notification";
+            closeBtn.style.display = "none";
+        }, 350);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("notification-close").addEventListener("click", hideNotification);
+        try {
+            if (__notiData && __notiData.message) {
+                showNotification(__notiData.message, __notiData.type || "info", 3500);
+            }
+        } catch(e) {
+            console.error("Notification parse error:", e);
+        }
+    });
+</script>
 
 	<!---Swiper-->
 	<link
@@ -122,37 +196,50 @@
                 }
                 else
                 {
-    <a asp-action="Index" asp-controller="Account" asp-area="Default"
-       style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">
-       👤 Account
-    </a>
-}
+                    <a asp-action="Require" asp-controller="Account" asp-area="Default"
+                    style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">
+                    👤 Account
+                    </a>
+                }
 
 
                 <a href="#" style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">❤️ Wishlist</a>
-                <a href="checkout.html" style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">✅ Checkout</a>
-                <a asp-action="Index" asp-controller="Cart" asp-area="Default" style="color:white; padding:6px 12px; border-radius:6px; display:flex; align-items:center; gap:6px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); text-decoration:none; position:relative;">
-                    🛒 Cart <span style="background:rgba(255,255,255,0.3); width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">
-                        @{
-                            string? jsonString = Context.Session.GetString("Cart");
+                
+                @{
+                    if(!string.IsNullOrEmpty(ss))
+                    {
+                        <a asp-action="Index" asp-controller="Checkout" asp-area="Default" style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">✅ Checkout</a>
+                        <a asp-action="Index" asp-controller="Cart" asp-area="Default" style="color:white; padding:6px 12px; border-radius:6px; display:flex; align-items:center; gap:6px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); text-decoration:none; position:relative;">
+                            🛒 Cart <span style="background:rgba(255,255,255,0.3); width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">
+                                @{
+                                    string? jsonString = Context.Session.GetString("Cart");
 
-                            if(jsonString ==null)
-                            {
-                                <span>0</span>
-                            }
-                            else{
-                                var list = JsonSerializer.Deserialize<List<CartItemModel>>(jsonString);
-                                int count = 0;
-                                foreach(var item in list)
-                                {
-                                    count += item.Quantity;
+                                    if(jsonString ==null)
+                                    {
+                                        <span>0</span>
+                                    }
+                                    else{
+                                        var list = JsonSerializer.Deserialize<List<CartItemModel>>(jsonString);
+                                        int count = 0;
+                                        foreach(var item in list)
+                                        {
+                                            count += item.Quantity;
+                                        }
+
+                                        <span>@count</span>
+                                    }
                                 }
-
-                                <span>@count</span>
-                            }
-                        }
-                    </span>
-                </a>
+                            </span>
+                        </a>
+                    }
+                    else{
+                        <a asp-action="Require" asp-controller="Account" asp-area="Default" style="color:#4a5568; padding:6px 10px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">✅ Checkout</a>
+                        <a asp-action="Require" asp-controller="Account" asp-area="Default" style="color:white; padding:6px 12px; border-radius:6px; display:flex; align-items:center; gap:6px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); text-decoration:none; position:relative;">
+                        🛒 Cart <span style="background:rgba(255,255,255,0.3); width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">
+                        </a>
+                    }
+                }
+                
 
                 <!-- User Authentication -->
                 <div style="margin-left:12px; padding-left:12px; border-left:1px solid #e2e8f0;">
@@ -199,6 +286,12 @@
             </div>
         </div>
     </div>
+
+    <div id="notification" class="notification" style="display:none;">
+    <span id="notification-text"></span>
+    <button id="notification-close" aria-label="Close" style="display:none;">&times;</button>
+    </div>
+
 </header>
 
         @Html.Partial("_NotificationPartial")

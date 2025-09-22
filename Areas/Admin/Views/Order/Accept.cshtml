@@ -1,0 +1,84 @@
+@using System.Text.Json
+@using TechnicalShop.Areas.Admin.Model.DTO
+@using TechnicalShop.Helper
+@model IEnumerable<AcceptDTO>
+
+
+@if(Model.Count() == 0)
+{
+<div style="font-family:Arial, sans-serif; padding:40px; text-align:center; background:#f5f6fa; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+    <div style="margin-bottom:20px;">
+        <span style="font-size:48px; display:inline-block; margin-bottom:10px;">📭</span>
+        <h2 style="color:#333; margin:0;">Không có đơn hàng mới</h2>
+        <p style="color:#666; margin-top:8px; font-size:15px;">Hiện tại chưa có đơn hàng nào cần xử lý.</p>
+    </div>
+
+    <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
+        <a asp-action="Index" asp-controller="Order" asp-area="admin" style="padding:10px 20px; border-radius:8px; background:#6c757d; color:white; text-decoration:none; font-weight:500; display:inline-block;">
+            ⬅️ Quay lại trang chính
+        </a>
+    </div>
+</div>
+}else
+{
+<div style="font-family:Arial, sans-serif; padding:20px; background:#f5f6fa; max-width:100%; overflow-x:auto;">
+  <!-- Thanh tìm kiếm / lọc -->
+  <div style="margin-bottom:20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; max-width:100%;">
+    <input type="text" placeholder="Tìm kiếm khách hàng..." style="padding:8px 12px; border-radius:8px; border:1px solid #ccc; flex:1; max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+    <input type="date" style="padding:8px 12px; border-radius:8px; border:1px solid #ccc; max-width:150px;">
+    <button style="padding:8px 16px; border-radius:8px; border:none; background:#0062cc; color:white; cursor:pointer; font-weight:500; white-space:nowrap;">🔍 Lọc</button>
+  </div>
+
+  <!-- Bảng danh sách đơn hàng -->
+  <table style="width:100%; border-collapse:separate; border-spacing:0 10px; min-width:800px;">
+    <thead>
+      <tr style="text-align:left; color:#555; background:#e9ecef;">
+        <th style="padding:12px 15px; white-space:nowrap;">Mã đơn</th>
+        <th style="padding:12px 15px; white-space:nowrap;">Ngày đặt</th>
+        <th style="padding:12px 15px; white-space:nowrap;">Khách hàng</th>
+        <th style="padding:12px 15px; white-space:nowrap;">SĐT / Email</th>
+        <th style="padding:12px 15px; text-align:right; white-space:nowrap;">Tổng tiền</th>
+        <th style="padding:12px 15px; white-space:nowrap;">Thanh toán</th>
+        <th style="padding:12px 15px; white-space:nowrap;">Trạng thái</th>
+        <th style="padding:12px 15px; text-align:center; white-space:nowrap;">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach(var order in Model)
+      {
+      <tr style="background:#fff; border-radius:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+        <td style="padding:12px 15px; white-space:nowrap;">#@order.id</td>
+        <td style="padding:12px 15px; white-space:nowrap;">@order.orderedAt.ToString("dd/MM/yyyy")</td>
+        <td style="padding:12px 15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;">@order.customerName</td>
+        <td style="padding:12px 15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;">@order.phone</td>
+        <td style="padding:12px 15px; text-align:right; white-space:nowrap;">@order.totalPrice.ToString("N0")</td>
+        <td style="padding:12px 15px; white-space:nowrap; text-overflow:ellipsis; max-width:120px;">@EnumToView.PaymentMethodToView(order.paymentMethod)</td>
+        <td style="padding:12px 15px;">
+          <span style="background:#e1f7e7; color:#28a745; padding:4px 10px; border-radius:12px; font-size:13px; white-space:nowrap;">@EnumToView.OrdetToView(order.orderStatus)</span>
+        </td>
+        <td style="padding:12px 15px; text-align:center;">
+            <form asp-action="Detail" asp-controller="Order" asp-area="admin" method="post" style="display:inline;">
+            <input type="hidden" value="@order.id" name="id"/>
+              <button type="submit" 
+                        style="padding:6px 10px; margin-right:4px; border:none; border-radius:6px; background:#17a2b8; color:white; cursor:pointer; white-space:nowrap; text-decoration:none; display:inline-block;">
+                    🔍 Xem
+                </button>
+            </form>
+            <form asp-action="AcceptOrder" asp-controller="Order" asp-area="admin" method="post" style="display:inline;">
+                <input name="id" type="hidden" value="@order.id" />
+                <input name="orders" type="hidden" value="@JsonSerializer.Serialize(Model)"/>
+                <button type="submit" 
+                        style="padding:6px 10px; margin-right:4px; border:none; border-radius:6px; 
+                              background:#28a745; color:white; cursor:pointer; white-space:nowrap;">
+                    ✅ Duyệt
+                </button>
+            </form>
+            <a style="padding:6px 10px; border:none; border-radius:6px; background:#dc3545; color:white; cursor:pointer; white-space:nowrap; text-decoration:none; display:inline-block;">
+            ❌ Hủy</a>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+}

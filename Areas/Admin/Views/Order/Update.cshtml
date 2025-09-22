@@ -1,0 +1,158 @@
+@using TechnicalShop.Areas.Admin.Model.DTO
+@using TechnicalShop.Models.Enum
+@model IEnumerable<UpdateDTO>
+
+<div style="font-family:Arial, sans-serif; padding:20px; background:#f5f6fa; overflow-x:auto;">
+  <!-- Thanh tìm kiếm / lọc -->
+  <div style="margin-bottom:20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+    <input type="text" placeholder="Tìm kiếm khách hàng..." style="padding:8px 12px; border-radius:8px; border:1px solid #ccc; flex:1; min-width:200px;">
+    <input type="date" style="padding:8px 12px; border-radius:8px; border:1px solid #ccc; min-width:150px;">
+    <button style="padding:8px 16px; border-radius:8px; border:none; background:#0062cc; color:white; cursor:pointer; font-weight:500;">🔍 Lọc</button>
+    <button id="btnConfirm" 
+        style="padding:8px 16px; border-radius:8px; border:none; background:#28a745; color:white; cursor:pointer; font-weight:500;">
+      ✅ Xác nhận
+    </button>
+  </div>
+
+  <!-- Bảng cập nhật trạng thái đơn hàng -->
+  <table style="width:100%; border-collapse:collapse; min-width:900px;">
+    <thead>
+      <tr style="background:#e9ecef; color:#555; text-align:left; font-weight:500;">
+        <th style="padding:12px 15px; white-space:nowrap;">Mã đơn</th>
+        <th style="padding:12px 15px; white-space:nowrap;">Ngày đặt</th>
+        <th style="padding:12px 15px;">Khách hàng</th>
+        <th style="padding:12px 15px; white-space:nowrap;">SĐT</th>
+        <th style="padding:12px 15px;">Email</th>
+        <th style="padding:12px 15px; text-align:right; white-space:nowrap;">Tổng tiền</th>
+        <th style="padding:12px 15px; white-space:nowrap;">Thanh toán</th>
+        <th style="padding:12px 15px; white-space:nowrap;">Trạng thái</th>
+        <th style="padding:12px 15px; text-align:center; white-space:nowrap;">Hành động</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @foreach(var item in Model)
+      {
+      <tr style="background:#fff; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+        <td style="padding:10px 15px; white-space:nowrap;">#@item.id</td>
+        <td style="padding:10px 15px; white-space:nowrap;">@item.orderedAt.ToString("dd/MM/yyyy")</td>
+        <td style="padding:10px 15px; word-break:break-word;">@item.customerName</td>
+        <td style="padding:10px 15px; white-space:nowrap;">@item.phone</td>
+        <td style="padding:10px 15px; word-break:break-word;">@item.Email</td>
+        <td style="padding:10px 15px; text-align:right; white-space:nowrap;">@item.totalPrice.ToString("N0")</td>
+
+        
+        <td style="padding:12px 15px;">
+            <select style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
+                @if(item.paymentStatus == PaymentStatus.Unpaid)
+                {
+                    <option selected value="@((int)PaymentStatus.Unpaid)">Chưa thanh toán</option>
+                    <option value="@((int)PaymentStatus.Paid)">Đã thanh toán</option>
+                }
+                else
+                {
+                    <option selected value="@((int)PaymentStatus.Paid)">Đã thanh toán</option>
+                    <option value="@((int)PaymentStatus.Unpaid)">Chưa thanh toán</option>
+                }
+            </select>
+        </td>
+        
+        <td style="padding:12px 15px;">
+              <select style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
+                  @if(item.orderStatus == OrderStatus.Processing)
+                  {
+                      <option value="@((int)OrderStatus.Processing)" selected>Đang xử lý</option>
+                  }
+                  else
+                  {
+                      <option value="@((int)OrderStatus.Processing)">Đang xử lý</option>
+                  }
+
+                  @if(item.orderStatus == OrderStatus.Shipping)
+                  {
+                      <option value="@((int)OrderStatus.Shipping)" selected>Đang vận chuyển</option>
+                  }
+                  else
+                  {
+                      <option value="@((int)OrderStatus.Shipping)">Đang vận chuyển</option>
+                  }
+
+                  @if(item.orderStatus == OrderStatus.Completed)
+                  {
+                      <option value="@((int)OrderStatus.Completed)" selected>Hoàn tất</option>
+                  }
+                  else
+                  {
+                      <option value="@((int)OrderStatus.Completed)">Hoàn tất</option>
+                  }
+
+                  @if(item.orderStatus == OrderStatus.Cancelled)
+                  {
+                      <option value="@((int)OrderStatus.Cancelled)" selected>Hủy bỏ</option>
+                  }
+                  else
+                  {
+                      <option value="@((int)OrderStatus.Cancelled)">Hủy bỏ</option>
+                  }
+              </select>
+          </td>
+
+        <!-- Nút Lưu -->
+        <td style="padding:10px 15px; text-align:center;">
+          <button class="btnSave" data-id="@item.id"
+            style="padding:4px 10px; border:none; border-radius:6px; background:#28a745; color:white; cursor:pointer; font-size:13px;">
+          💾 Lưu
+        </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+      <form asp-action="AcceptUpdate" asp-area="admin" asp-controller="Order" id="updateForm" method="post" ">
+        <input type="hidden" name="updateList" id="updateListInput" />
+      </form>
+</div>
+
+  <script>
+  // Mảng lưu dữ liệu tạm
+  let updateList = [];
+</script>
+
+  <script>
+  document.querySelectorAll(".btnSave").forEach(btn => {
+    btn.addEventListener("click", function () {
+      let row = this.closest("tr");
+      let id = this.getAttribute("data-id");
+      let paymentStatus = row.querySelector("td:nth-child(7) select").value;
+      let orderStatus = row.querySelector("td:nth-child(8) select").value;
+
+      // Tạo đối tượng giống UpdateDTO
+      let updateItem = {
+        id: parseInt(id),
+        paymentStatus: parseInt(paymentStatus),
+        orderStatus: parseInt(orderStatus)
+      };
+
+      // Kiểm tra nếu đã có id trong list thì update, nếu chưa thì thêm
+      let existing = updateList.find(x => x.id == id);
+      if (existing) {
+        existing.paymentStatus = paymentStatus;
+        existing.orderStatus = orderStatus;
+      } else {
+        updateList.push(updateItem);
+      }
+
+      console.log("Update list hiện tại:", updateList);
+      alert("Đã thêm vào danh sách thay đổi!");
+    });
+  });
+</script>
+
+  <script>
+  document.getElementById("btnConfirm").addEventListener("click", function () {
+    document.getElementById("updateListInput").value = JSON.stringify(updateList);
+    document.getElementById("updateForm").submit();
+  });
+</script>
+
+

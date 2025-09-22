@@ -1,0 +1,105 @@
+@model IEnumerable<AccountModel>
+<div style="padding:20px; font-family:Arial, sans-serif;">
+
+    @if(Model.Count() == 0)
+    {
+        <div class="text-center py-12">
+        <i class="fas fa-folder-open text-4xl text-gray-400"></i>
+        <h3 class="mt-4 text-gray-900">Chưa có tài khoản nào</h3>
+        <p class="mt-2 text-gray-500">Bắt đầu bằng cách tạo tài khoản mới.</p>
+        </div>
+    }
+    else{
+                <!-- Page Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <div>
+                    <h1 style="font-size:24px; font-weight:600; margin:0; color:#111;">Quản lý tài khoản</h1>
+                    <p style="font-size:14px; color:#555; margin-top:5px;">Quản lý các tài khoản trong hệ thống</p>
+                </div>
+                <div>
+                
+                </div>
+                <a asp-action="Create" asp-controller="Account" asp-area="admin" style="display:inline-flex; align-items:center; padding:8px 16px; background-color:#10b981; color:white; font-size:14px; font-weight:500; border-radius:8px; text-decoration:none;">
+                    <span style="margin-right:5px;">+</span> Thêm tài khoản
+                </a>
+            </div>
+
+            <!-- Container lọc -->
+            <div style="padding:15px; display:flex; align-items:center; gap:10px; background-color:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; max-width:400px; margin-bottom:20px;">
+                <form method="post" asp-action="Index" asp-controller="Account" asp-area="admin">
+                <!-- Label -->
+                <label for="roleSelect" style="font-weight:500; color:#111; font-size:14px;">Lọc theo vai trò:</label>
+                
+                <!-- Dropdown -->
+                <select id="roleSelect" name="Role" style="padding:6px 10px; border:1px solid #ccc; border-radius:6px; font-size:14px; cursor:pointer;">
+                    <option selected value="all">Tất cả</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </select>
+                
+                <!-- Button -->
+                <button type="submit" style="padding:6px 14px; background-color:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; font-size:14px; font-weight:500;"
+                        onmouseover="this.style.backgroundColor='#2563eb';" onmouseout="this.style.backgroundColor='#3b82f6';">
+                    Lọc
+                </button>
+                </form>
+
+            </div>
+
+            <!-- Table Header -->
+            <div style="display:grid; grid-template-columns:2fr 3fr 2fr 3fr 1fr 2fr; background-color:#f3f4f6; border:1px solid #e5e7eb; padding:10px 15px; font-weight:600; color:#374151; text-transform:uppercase; font-size:12px;">
+                <div>Tên tài khoản</div>
+                <div>Email</div>
+                <div>Số điện thoại</div>
+                <div>Địa chỉ</div>
+                <div>Vai trò</div>
+                <div style="text-align:center;">Hành động</div>
+            </div>
+
+            <!-- Table Body -->
+            <div>
+
+                <!-- Row Example -->
+                @foreach(var account in Model)
+                {
+                <div style="display:grid; grid-template-columns:2fr 3fr 2fr 3fr 1fr 2fr; border-bottom:1px solid #e5e7eb; padding:10px 15px; align-items:center; background-color:#f9fafb;" 
+                    onmouseover="this.style.backgroundColor='#e0f2fe';" onmouseout="this.style.backgroundColor='#f9fafb';">
+                    <div style="font-weight:500; color:#111;">@account.Username</div>
+                    <div style="color:#555;">@account.Email</div>
+                    <div style="color:#111;"><code style="background-color:#f3f4f6; padding:2px 6px; border-radius:4px;">@account.PhoneNumber</code></div>
+                    <div style="color:#111;"><code style="background-color:#f3f4f6; padding:2px 6px; border-radius:4px;">@account.Address</code></div>
+                    <div>
+                        <span style="display:inline-block; padding:2px 8px; font-size:12px; background-color:#d1fae5; color:#065f46; border-radius:12px;">@account.Role</span>
+                    </div>
+                    <div style="text-align:center;">
+                    <a asp-action="Update" asp-controller="Account" asp-route-id="@account.Id">
+                        <button style="padding:4px 8px; margin-right:5px; border:none; border-radius:6px; background-color:#3b82f6; color:white; cursor:pointer;" 
+                                onmouseover="this.style.backgroundColor='#2563eb';" onmouseout="this.style.backgroundColor='#3b82f6';">
+                            Sửa
+                        </button>
+                    </a>
+                    <a  asp-action="Delete" asp-controller="Account" asp-area="admin" asp-route-id="@account.Id"
+                    onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">
+                        
+                        <button style="padding:4px 8px; border:none; border-radius:6px; background-color:#ef4444; color:white; cursor:pointer;" 
+                                onmouseover="this.style.backgroundColor='#dc2626';" onmouseout="this.style.backgroundColor='#ef4444';">
+                            Xóa
+                        </button>
+                    </a>
+                    </div>
+                </div>
+                }
+
+                <!-- Empty State -->
+                <div style="padding:40px; text-align:center; color:#6b7280;" id="emptyState" hidden>
+                    <div style="font-size:48px; margin-bottom:15px;">👤</div>
+                    <div style="font-size:18px; font-weight:500;">Chưa có tài khoản nào</div>
+                    <div style="margin-top:10px;">Bắt đầu bằng cách tạo tài khoản đầu tiên</div>
+                    <a href="#" style="display:inline-block; margin-top:15px; padding:8px 16px; background-color:#10b981; color:white; font-size:14px; font-weight:500; border-radius:8px; text-decoration:none;">
+                        + Thêm tài khoản
+                    </a>
+                </div>
+            </div>
+    }
+    
+</div>

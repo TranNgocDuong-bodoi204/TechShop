@@ -1,0 +1,43 @@
+@model IEnumerable<Order>
+<div style="font-family:Arial, sans-serif; max-width:1000px; margin:30px auto; padding:25px; 
+            background:#f8f9fa; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+
+    <!-- Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="margin:0; font-size:22px; color:#333;">Tất cả đơn hàng</h3>
+        <a href="/Order/All" style="font-size:14px; color:#0062cc; text-decoration:none;">Xem tất cả →</a>
+    </div>
+
+    <!-- Bảng đơn hàng -->
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03);">
+            <thead style="background:#e9ecef; color:#555; text-align:left; font-weight:500;">
+                <tr>
+                    <th style="padding:12px 15px;">Mã đơn</th>
+                    <th style="padding:12px 15px;">Khách hàng</th>
+                    <th style="padding:12px 15px;">Ngày đặt</th>
+                    <th style="padding:12px 15px;">Trạng thái</th>
+                    <th style="padding:12px 15px; text-align:right;">Tổng tiền</th>
+                    <th style="padding:12px 15px; text-align:center;">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model)
+                {
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:10px;">#@item.OrderId</td>
+                    <td style="padding:10px;">@item.CustomerName</td>
+                    <td style="padding:10px;">@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                    <td style="padding:10px; color:#e67e22; font-weight:500;">@item.orderStatus</td>
+                    <td style="padding:10px; text-align:right;">@item.TotalAmount.ToString("N0")</td>
+                    <td style="padding:10px; text-align:center;">
+                        <form asp-action="Detail" asp-controller="Order" asp-area="admin">
+                        <button type="submit" style="padding:6px 12px; border-radius:6px; background:#0062cc; color:white; text-decoration:none; font-size:13px;">Xem thêm</button>
+                        </form>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

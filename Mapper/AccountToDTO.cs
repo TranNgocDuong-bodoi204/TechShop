@@ -13,6 +13,7 @@ namespace TechnicalShop.Mapper
         {
             AccountViewDTO dto = new AccountViewDTO
             {
+                Id = model.Id,
                 Username = model.Username,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,

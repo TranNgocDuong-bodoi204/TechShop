@@ -1,0 +1,55 @@
+@using TechnicalShop.Models.DTO
+@model CheckoutSuccess
+
+<div style="max-width:700px; margin:60px auto; padding:50px 40px; 
+            background:#ffffff; border-radius:20px; 
+            box-shadow:0 15px 35px rgba(0,0,0,0.15); 
+            font-family: 'Roboto', 'Segoe UI', sans-serif; text-align:center;">
+
+    <!-- Icon success với hiệu ứng vòng tròn -->
+    <div style="width:100px; height:100px; margin:0 auto 30px auto;
+                background: linear-gradient(135deg, #28a745, #20c997);
+                border-radius:50%; display:flex; align-items:center; justify-content:center;
+                box-shadow:0 5px 15px rgba(0,0,0,0.2); animation: pop 0.6s ease;">
+        <span style="font-size:50px; color:#fff;">✔</span>
+    </div>
+
+    <!-- Heading -->
+    <h1 style="color:#28a745; font-size:32px; margin-bottom:20px;">Đặt hàng thành công!</h1>
+
+    <!-- Message -->
+    <p style="font-size:18px; color:#333; line-height:1.8; margin-bottom:25px;">
+        Cảm ơn <strong>@Model.CustomerName</strong> đã đặt hàng. <br>
+        <strong>Tổng thanh toán:</strong> @Model.TotalAmount.ToString("C") <br>
+        <strong>Phương thức thanh toán:</strong> @Model.paymentMethod
+    </p>
+
+    <!-- Notice -->
+    <div style="display:inline-block; text-align:left; 
+                background:#f9fdf9; border-left:5px solid #28a745; 
+                padding:20px 25px; border-radius:10px; margin-bottom:35px;
+                color:#555; font-size:16px;">
+        <strong>Lưu ý:</strong> Đơn hàng của bạn đang được xử lý và chờ duyệt. 
+        Chúng tôi sẽ thông báo ngay khi đơn hàng được xác nhận.
+    </div>
+
+    <!-- Button quay lại trang chủ -->
+    <a asp-action="Index" asp-controller="Home" asp-area="Default" 
+       style="display:inline-block; padding:16px 35px; font-size:17px;
+              font-weight:600; color:#fff; text-decoration:none;
+              border-radius:12px; background: linear-gradient(135deg, #28a745, #20c997);
+              box-shadow:0 5px 15px rgba(40,167,69,0.4); transition: all 0.3s ease;">
+        Quay lại trang chủ
+    </a>
+
+</div>
+
+<!-- CSS Animation -->
+<style>
+
+    a:hover {
+        background: linear-gradient(135deg, #20c997, #28a745);
+        box-shadow:0 8px 20px rgba(32,201,151,0.5);
+        transform: translateY(-2px);
+    }
+</style>

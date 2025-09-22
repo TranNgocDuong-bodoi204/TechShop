@@ -27,7 +27,6 @@ namespace TechnicalShop.Controllers
             return View(comments);
 
         }
-
         public IActionResult approve(int id)
         {
             var comment = _context.Comments.Find(id);

@@ -1,0 +1,58 @@
+@using TechnicalShop.Models.DTO;
+@model AccountViewDTO;
+<div class="container mt-5 pt-5" style="display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1200px;">
+    <!-- Main Section -->
+     <!-- Sidebar Menu -->
+    <div class="account-sidebar" style="flex: 1; min-width: 200px; padding-left: 20px;">
+      <div class="sidebar-card" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: #6a0dad; margin-bottom: 15px;">Menu</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 12px;"><a href="#account-info" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Thông tin Tài khoản</a></li>
+          <li style="margin-bottom: 12px;"><a href="/Account/Edit" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Chỉnh sửa Tài khoản</a></li>
+          <li style="margin-bottom: 12px;"><a href="/Account/Orders" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Xem đơn hàng</a></li>
+          <li style="margin-bottom: 12px;"><a href="#purchase-history" style="color: #6a0dad; text-decoration: none; font-weight: 500;">Lịch sử mua hàng</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="account-main" style="flex: 3; padding-right: 20px;">
+      <div class="account-card" style="background-color: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+        <h2 style="color: #6a0dad; margin-bottom: 20px;">Chỉnh sửa thông tin tài khoản</h2>
+            @Html.Partial("_NotificationPartial")
+            <form asp-action="Update" asp-controller="Account" method="post">
+                
+                <input  type="hidden" value="@Model.Id" name="Id"/>
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight: bold;">Tên đăng nhập:</label>
+                    <input type="text" name="Username" value="@Model.Username" class="form-control"
+                        style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight: bold;">Email:</label>
+                    <input type="email" name="Email" value="@Model.Email" class="form-control"
+                        style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight: bold;">Số điện thoại:</label>
+                    <input type="tel" name="PhoneNumber" value="@Model.PhoneNumber" class="form-control"
+                        style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight: bold;">Địa chỉ:</label>
+                    <input type="text" name="Address" value="@Model.Address" class="form-control"
+                        style="background-color: #f8f9fa; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+                <input  type="hidden" value="@Model.CreatedAt" name="CreatedAt"/>
+                <input  type="hidden" value="@Model.Role" name="Role"/>
+
+                <button type="submit" class="btn btn-edit"
+                        style="background-color: #6a0dad; color: white; border: none; border-radius: 5px; padding: 10px 20px;">
+                    Lưu thông tin
+                </button>
+            </form>
+
+      </div>
+  </div>
+</div>

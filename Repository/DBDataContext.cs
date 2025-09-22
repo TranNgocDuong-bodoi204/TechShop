@@ -17,5 +17,7 @@ namespace TechnicalShop.Repository
         public DbSet<AccountModel> Account { get; set; }
         public DbSet<InventoryModel> Inventories { get; set; }
         public DbSet<CommentModel> Comments { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
     }
 }
