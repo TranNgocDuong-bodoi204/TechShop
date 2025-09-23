@@ -31,7 +31,6 @@ namespace TechShopOnline.Controllers
 
             return View(cartView);
         }
-
         public IActionResult Add(int id)
         {
             var product = _context.Products.FirstOrDefault(x => x.Id == id);
@@ -65,7 +64,7 @@ namespace TechShopOnline.Controllers
             }
             HttpContext.Session.SetString("Cart", JsonSerializer.Serialize(cart));
             TempData["success"] = "Thêm sản phẩm vào giỏ hàng thành công!";
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Remove(int id)

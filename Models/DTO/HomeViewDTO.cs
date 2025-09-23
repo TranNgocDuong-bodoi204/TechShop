@@ -11,5 +11,14 @@ namespace TechnicalShop.Models.DTO
         public IEnumerable<ProductModel> Products { get; set; }
         public IEnumerable<BrandModel> Brands { get; set; }
         public IEnumerable<CategoryModel> Categories { get; set; }
+
+        public HomeViewDTO() { }
+
+        public HomeViewDTO(List<ProductModel> product, List<CategoryModel> category, List<BrandModel> brand)
+        {
+            this.Products = product;
+            this.Brands = brand;
+            this.Categories = category;
+        }
     }
 }

@@ -5,7 +5,6 @@
     <!-- Header -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h3 style="margin:0; font-size:22px; color:#333;">Tất cả đơn hàng</h3>
-        <a href="/Order/All" style="font-size:14px; color:#0062cc; text-decoration:none;">Xem tất cả →</a>
     </div>
 
     <!-- Bảng đơn hàng -->
@@ -31,7 +30,8 @@
                     <td style="padding:10px; color:#e67e22; font-weight:500;">@item.orderStatus</td>
                     <td style="padding:10px; text-align:right;">@item.TotalAmount.ToString("N0")</td>
                     <td style="padding:10px; text-align:center;">
-                        <form asp-action="Detail" asp-controller="Order" asp-area="admin">
+                        <form asp-action="ViewDetail" asp-controller="Order" asp-area="admin">
+                        <input type="hidden" name="id" value="@item.OrderId" />
                         <button type="submit" style="padding:6px 12px; border-radius:6px; background:#0062cc; color:white; text-decoration:none; font-size:13px;">Xem thêm</button>
                         </form>
                     </td>

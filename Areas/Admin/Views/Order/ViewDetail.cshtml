@@ -1,0 +1,93 @@
+@using TechnicalShop.Helper
+@using TechnicalShop.Models.DTO
+@model OrderDetailDTO
+<div style="font-family:Arial, sans-serif; max-width:900px; margin:20px auto; padding:25px; 
+            background:#f8f9fa; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.05);">
+
+    <!-- Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+        <h2 style="font-size:24px; color:#333; margin:0; font-weight:600;">Chi tiết đơn hàng #@Model.id</h2>
+        <span style="font-size:14px; color:#666;">
+            <i class="fas fa-calendar-alt" style="margin-right:4px; color:#888;"></i> @Model.orderAt.ToString("dd/MM/yyyy")
+        </span>
+        <div style="margin-bottom:20px;">
+            <a asp-action="ViewOrder" asp-controller="Order" asp-area="admin" style="padding:8px 16px; border-radius:6px; border:none; background:#6c757d; color:white; cursor:pointer; font-weight:500;">
+            Quay lại
+            </a>
+        </div>
+    </div>
+
+    <!-- Thông tin khách hàng -->
+    <div style="background:#fff; border-radius:10px; border:1px solid #ddd; padding:20px; margin-bottom:25px;">
+        <div style="display:flex; flex-wrap:wrap; gap:15px;">
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-user" style="margin-right:5px; color:#888;"></i>Khách hàng:</strong><br> @Model.CustomerName
+            </div>
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-envelope" style="margin-right:5px; color:#888;"></i>Email:</strong><br> @Model.Email
+            </div>
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-phone" style="margin-right:5px; color:#888;"></i>Số điện thoại:</strong><br> @Model.Phone
+            </div>
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-map-marker-alt" style="margin-right:5px; color:#888;"></i>Địa chỉ:</strong><br> @Model.Address
+            </div>
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-credit-card" style="margin-right:5px; color:#888;"></i>Phương thức thanh toán:</strong><br> @EnumToView.PaymentMethodToView(Model.paymentMethod)
+            </div>
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-box" style="margin-right:5px; color:#888;"></i>Trạng thái đơn hàng:</strong><br>
+                <span style="display:inline-flex; align-items:center; padding:2px 8px; font-size:12px; font-weight:500; border-radius:12px; 
+                             color:#155724; background-color:#d4edda;">
+                    <i class="fas fa-check-circle" style="margin-right:4px;"></i>@EnumToView.PayemtStatusToView(Model.paymentStatus)
+                </span>
+            </div>
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-money-bill-wave" style="margin-right:5px; color:#888;"></i>Trạng thái thanh toán:</strong><br>
+                <span style="display:inline-flex; align-items:center; padding:2px 8px; font-size:12px; font-weight:500; border-radius:12px; 
+                             color:#856404; background-color:#fff3cd;">
+                    <i class="fas fa-exclamation-circle" style="margin-right:4px;"></i>Chưa thanh toán
+                </span>
+            </div>
+            <div style="flex:1; min-width:220px;">
+                <strong style="color:#444;"><i class="fas fa-coins" style="margin-right:5px; color:#888;"></i>Tổng tiền:</strong><br>
+                @Model.TotalAmount
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <h3 style="font-size:20px; color:#333; margin-bottom:15px; border-bottom:2px solid #ddd; padding-bottom:8px;">
+        Sản phẩm trong đơn
+    </h3>
+
+    <div style="display:flex; flex-direction:column; gap:15px;">
+        <!-- Lặp sản phẩm -->
+        @foreach(var pro in Model.orderDetails)
+        {
+                <div style="display:flex; align-items:center; background:#fff; border-radius:10px; border:1px solid #ddd; padding:15px; box-shadow:0 2px 5px rgba(0,0,0,0.03);">
+                    <!-- Ảnh sản phẩm -->
+                    <div style="flex-shrink:0; width:60px; height:60px; margin-right:15px; overflow:hidden; border-radius:8px;">
+                        <img src="~/images/@pro.Image" alt="PRODUCT_NAME" style="width:60px; height:60px; object-fit:cover;">
+                    </div>
+                    <!-- Thông tin sản phẩm -->
+                    <div style="flex:1; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:500; color:#444; font-size:16px;">
+                                <i class="fas fa-tag" style="margin-right:5px; color:#888;"></i>
+                                @pro.ProductName
+                            </div>
+                            <div style="font-size:13px; color:#666;">
+                            @pro.Description
+                            </div>
+                        </div>
+                        <div style="text-align:right; font-size:14px; color:#333;">
+                            <div>Giá: @pro.Price</div>
+                            <div>Số lượng: @pro.Quantity</div>
+                            <div><strong>Tổng: @(pro.Price * pro.Quantity)</strong></div>
+                        </div>
+                    </div>
+                </div>
+        }
+    </div>
+</div>

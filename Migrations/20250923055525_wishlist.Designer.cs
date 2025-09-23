@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechnicalShop.Repository;
 
@@ -11,9 +12,11 @@ using TechnicalShop.Repository;
 namespace TechnicalShop.Migrations
 {
     [DbContext(typeof(DBDataContext))]
-    partial class DBDataContextModelSnapshot : ModelSnapshot
+    [Migration("20250923055525_wishlist")]
+    partial class wishlist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

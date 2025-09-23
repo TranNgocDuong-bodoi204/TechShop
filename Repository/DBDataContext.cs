@@ -19,5 +19,6 @@ namespace TechnicalShop.Repository
         public DbSet<CommentModel> Comments { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<WishListModel> WishLists{ get; set; }
     }
 }

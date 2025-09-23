@@ -73,7 +73,7 @@
                     ✅ Duyệt
                 </button>
             </form>
-            <a style="padding:6px 10px; border:none; border-radius:6px; background:#dc3545; color:white; cursor:pointer; white-space:nowrap; text-decoration:none; display:inline-block;">
+            <a asp-action="Cancel" asp-controller="Order" asp-area="admin" asp-route-id="@order.id" style="padding:6px 10px; border:none; border-radius:6px; background:#dc3545; color:white; cursor:pointer; white-space:nowrap; text-decoration:none; display:inline-block;">
             ❌ Hủy</a>
         </td>
       </tr>

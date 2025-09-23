@@ -131,7 +131,48 @@ namespace TechnicalShop.Areas.Admin.Controllers
             return View("Update", dto);
         }
 
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var order = await _context.Orders.Where(x => x.OrderId == id).FirstOrDefaultAsync();
+
+            order.orderStatus = OrderStatus.Cancelled;
+            await _context.SaveChangesAsync();
+            var orders = await _context.Orders.Where(x =>x.orderStatus == OrderStatus.Pending).ToListAsync();
+            List<AcceptDTO> acceptDTOs = new List<AcceptDTO>();
+
+            foreach (var item in orders)
+            {
+                AcceptDTO acceptDTO = new AcceptDTO(item);
+                acceptDTOs.Add(acceptDTO);
+            }
+            return View("Accept", acceptDTOs);
+        }
+
         // order detail
+        [HttpPost]
+        public async Task<IActionResult> ViewDetail(int id)
+        {
+            var order = await _context.Orders.Where(x => x.OrderId == id).FirstOrDefaultAsync();
+
+            List<OrderItemDetail> orderItemDetails = new List<OrderItemDetail>();
+
+            var orderItems = await _context.OrderItems.Where(x => x.OrderId == order.OrderId).ToListAsync();
+            foreach (var item in orderItems)
+            {
+                OrderItemDetail itemDetail = new OrderItemDetail();
+                itemDetail.ProductName = item.ProductName;
+                itemDetail.Price = item.Price;
+                itemDetail.Quantity = item.Quantity;
+                itemDetail.Image = await _context.Products.Where(x => x.Id == item.ProductId).Select(i => i.Image).FirstOrDefaultAsync() ?? "avarta_1.jpg";
+                itemDetail.Description = await _context.Products.Where(x => x.Id == item.ProductId).Select(x => x.Description).FirstOrDefaultAsync() ?? "không có";
+                orderItemDetails.Add(itemDetail);
+            }
+
+            OrderDetailDTO dto = new OrderDetailDTO();
+            dto.SetOrderDetailInfo(order, orderItemDetails);
+
+            return View(dto);
+        }
         [HttpPost]
         public async Task<IActionResult> Detail(int id)
         {
